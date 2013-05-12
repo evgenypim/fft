@@ -41,9 +41,11 @@ class FFT
 
   def make_matrix(data, base)
     return data if base.empty?
+
     parts_count = base.first
     step = data.size / parts_count
-    (0..parts_count-1).map { |i| make_matrix(data[i*step, step], base[1..base.size]) }
+
+    (0..parts_count-1).map { |i| make_matrix(data[i * step, step], base[1..base.size]) }
   end
 
   def args
