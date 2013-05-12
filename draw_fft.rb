@@ -2,20 +2,21 @@
 require 'gnuplot'
 require './fft'
 
-class DrawFFT < FFT
-  include FFT
+class DrawFFT
+  function = Function.initialize_cos_signal
+  fft = FFT.new(function)
 
   ARG_MIN = 0
-  ARG_MAX = 100
+  ARG_MAX = 10000
 
   Gnuplot.open do |gp|
     Gnuplot::Plot.new( gp ) do |plot|
-      plot.xrange "[#{ARG_MIN}:#{ARG_MAX}]"
+      plot.xrange "[#{fft.min_arg}:#{fft.max_arg}]"
       plot.title  "Спектр сигнала"
-      plot.ylabel "Частота"
-      plot.xlabel "Спектральная плотность"
+      plot.ylabel "Спектральная плотность"
+      plot.xlabel "Частота"
       
-      plot.data << Gnuplot::DataSet.new([[1,2], [1,2]]) do |ds|
+      plot.data << Gnuplot::DataSet.new([fft.args, fft.signal]) do |ds|
         ds.with = "linespoints"
         ds.notitle
       end

@@ -34,4 +34,22 @@ class FFT
   def omega(k, n)
       Math::E ** Complex(0, 2 * Math::PI * k / n)
   end
+
+  def args
+    (1..@counts.size).map { |i| i * @counts.sampling }
+  end
+
+  def signal
+    fft(@counts)
+    # @counts
+  end
+
+  def min_arg
+    @counts.sampling
+  end
+
+  def max_arg
+    @counts.sampling * @counts.size
+  end
+
 end
