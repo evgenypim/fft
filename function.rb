@@ -1,3 +1,4 @@
+# coding: UTF-8
 class Function
 
   def initialize(&block)
@@ -10,7 +11,7 @@ class Function
 
   def discret(count, freq_discret)
     data = (1..count).map { |x| @function[x/freq_discret] } unless @function.nil?
-    @discret_data = Discret.new data, freq_discret
+    @discret_data = Digit.new data, freq_discret
   end
 
 end
