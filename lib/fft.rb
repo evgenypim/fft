@@ -39,6 +39,13 @@ class FFT
       Math::E ** Complex(0, 2 * Math::PI * k / n)
   end
 
+  def make_matrix(data, base)
+    return data if base.empty?
+    parts_count = base.first
+    step = data.size / parts_count
+    (0..parts_count-1).map { |i| make_matrix(data[i*step, step], base[1..base.size]) }
+  end
+
   def args
     step = @counts.sampling.to_f / @counts.size
     (0..@counts.size - 1).map { |i| i * step}
