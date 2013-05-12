@@ -13,7 +13,7 @@ class FFT
   #
   # Example use:  puts fft([1,1,1,1])
   #
-  def fft(vec)
+  def fft(vec )
       return vec if vec.size <= 1
 
       even = Array.new(vec.size / 2) { |i| vec[2 * i] }
@@ -26,6 +26,10 @@ class FFT
       fft_odd.concat(fft_odd)
 
       Array.new(vec.size) {|i| fft_even[i] + fft_odd [i] * omega(-i, vec.size)}
+  end
+
+  def dpf(vec)
+    Array.new(vec.size) { |i| vec[i] * omega(-i, vec.size) }
   end
 
   # calculate individual element of FFT matrix:  (e ^ (2 pi i k/n))
