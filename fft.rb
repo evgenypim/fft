@@ -2,35 +2,37 @@
 require "function"
 
 module FFT
-  F_signal = 5
-  F_discret = 10
-  W_signal = 2 * F_signal * Math::PI
-  W_discret = 2 * F_discret * Math::PI
-  ARG_MIN = 0
-  ARG_MAX = 100
 
-   discret_signal = []
-   discret_spectr = []
-   t = []
-   f = []
+  def initialize(signal)
+    @counts = signal.discret_data if signal.is_a? Function
+    @counts = signal if signal.is_a? Digit
+  end
 
-   def initialize_signal 
-     @signal = Function.new { |t| Math.sin(W_signal * t) }
-   end
+  # Solve "vec = fft_matrix * beta" for beta (modulo a constant.)
+  # (Divide result by Math::sqrt(vec.size) to preserve length.)
+  # vec.size is assumed to be a power of 2.
+  #
+  # Example use:  puts fft([1,1,1,1])
+  #
+  def fft(vec)
+      return vec if vec.size <= 1
 
-   def self.discret_signal
-     discret_signal
-   end
+      even = Array.new(vec.size / 2) { |i| vec[2 * i] }
+      odd  = Array.new(vec.size / 2) { |i| vec[2 * i + 1] }
 
-   def self.discret_spectr
-     discret_spectr 
-   end
+      fft_even = fft(even)
+      fft_odd  = fft(odd)
 
-   def self.time
-     t
-   end
+      fft_even.concat(fft_even)
+      fft_odd.concat(fft_odd)
 
-   def self.freq
-     f
-   end
+      Array.new(vec.size) {|i| fft_even[i] + fft_odd [i] * omega(-i, vec.size)}
+  end
+
+  # calculate individual element of FFT matrix:  (e ^ (2 pi i k/n))
+  # fft_matrix[i][j] = omega(i*j, n)
+  #
+  def omega(k, n)
+      Math::E ** Complex(0, 2 * Math::PI * k / n)
+  end
 end
