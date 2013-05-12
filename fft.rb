@@ -1,7 +1,7 @@
 # coding: UTF-8
 require "./function"
 
-module FFT
+class FFT
 
   def initialize(signal)
     @counts = signal.discret_data if signal.is_a? Function
