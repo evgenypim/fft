@@ -9,7 +9,8 @@ class Function
   end
 
   def discret(count, freq_discret)
-    (1..count).map { |arg| @function[arg/freq_discret] } unless @function.nil?
+    data = (1..count).map { |x| @function[x/freq_discret] } unless @function.nil?
+    @discret_data = Discret.new data, freq_discret
   end
 
 end

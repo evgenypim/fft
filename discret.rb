@@ -2,8 +2,9 @@ class Digit
 
   include Enumerable
   
-  def initialize(data)
+  def initialize(data, freq_discret)
     @data = data
+    @freq_discret = freq_discret2
   end
 
   def length
@@ -11,8 +12,8 @@ class Digit
   end
 
   def each(&block)
-    @data.each do ||
-      block.call(member)
+    @data.each do |count|
+      block.call(count)
     end
   end
 
