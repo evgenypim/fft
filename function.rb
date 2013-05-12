@@ -16,7 +16,7 @@ class Function
     f_discret = 200
     count = 128
     omega = 2 * Math::PI * f_signal
-    Function.new(f_signal, f_discret, count) { |t| p t.class; ampl * Math.cos(omega * t + phase) }
+    Function.new(f_signal, f_discret, count) { |t| ampl * Math.cos(omega * t + phase) }
   end
 
   def result(arg)

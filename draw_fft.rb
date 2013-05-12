@@ -17,7 +17,7 @@ class DrawFFT
       plot.xlabel "Частота"
       
       plot.data << Gnuplot::DataSet.new([fft.args, fft.signal]) do |ds|
-        ds.with = "linespoints"
+        ds.with = "impulses"
         ds.notitle
       end
     end  

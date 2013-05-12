@@ -36,7 +36,8 @@ class FFT
   end
 
   def args
-    (1..@counts.size).map { |i| i * @counts.sampling }
+    step = @counts.sampling.to_f / @counts.size
+    (0..@counts.size - 1).map { |i| i * step}
   end
 
   def signal
@@ -45,11 +46,11 @@ class FFT
   end
 
   def min_arg
-    @counts.sampling
+    0
   end
 
   def max_arg
-    @counts.sampling * @counts.size
+    @counts.sampling
   end
 
 end
