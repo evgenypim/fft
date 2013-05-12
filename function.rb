@@ -1,5 +1,6 @@
 # coding: UTF-8
 class Function
+  
   include Math
 
   def initialize(f_signal = 20, f_discret = 50, count = 128, &block)
@@ -19,13 +20,12 @@ class Function
     @function[arg] unless @function.nil?
   end
 
-  def discretisize(count = @count)
-    data = (1..count).map { |x| @function[x/@f_discret] } unless @function.nil?
-    @discret_data = Digit.new data, @f_discret
+  def discretisize
+    data = (1..count).map { |x| result(x/@f_discret) } unless @function.nil?
+    Digit.new data, @f_discret
   end
 
   def discret_data
-    data = (1..count).map { |x| @function[x/@f_discret] } unless @function.nil?
-    Digit.new data, @f_discret
+    @discret_data ||= discretisize
   end
 end

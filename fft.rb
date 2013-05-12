@@ -1,5 +1,5 @@
 # coding: UTF-8
-require "function"
+require "./function"
 
 module FFT
 
