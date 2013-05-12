@@ -14,12 +14,8 @@ module FFT
    t = []
    f = []
 
-   for i in 0..100000
-         time = i.to_f / F_discret 
-         discret_signal << Math.sin(time * W_signal)
-         x << time
-         #f << i * FD
-         #ft << y[i] * Complex(Math.cos(fr[i]*i), Math.sin(fr[i]*i)).abs
+   def initialize_signal 
+     @signal = Function.new { |t| Math.sin(W_signal * t) }
    end
 
    def self.discret_signal

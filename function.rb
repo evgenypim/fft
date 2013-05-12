@@ -4,12 +4,12 @@ class Function
     @function = block
   end
 
-  def result(t)
-    @function[t] unless @function.nil?
+  def result(arg)
+    @function[arg] unless @function.nil?
   end
 
   def discret(count, freq_discret)
-    (1..count).map { |x| @function[x/freq_discret] } unless @function.nil?
+    (1..count).map { |arg| @function[arg/freq_discret] } unless @function.nil?
   end
 
 end

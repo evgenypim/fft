@@ -1,4 +1,4 @@
-class Discret
+class Digit
 
   include Enumerable
   
