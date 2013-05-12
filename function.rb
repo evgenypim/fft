@@ -1,6 +1,5 @@
 # coding: UTF-8
-class Function
-  
+class Function  
   include Math
 
   def initialize(f_signal = 20, f_discret = 50, count = 128, &block)

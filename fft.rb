@@ -2,7 +2,6 @@
 require "./function"
 
 class FFT
-
   def initialize(signal)
     @counts = signal.discret_data if signal.is_a? Function
     @counts = signal if signal.is_a? Digit
