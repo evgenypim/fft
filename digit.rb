@@ -1,8 +1,11 @@
 # coding: UTF-8
 class Digit < Array
-
-  def initialize(data, freq_discret)
-    @freq_discret = freq_discret2
+  def initialize(data, sampling)
+    @sampling = sampling
     super data
+  end
+
+  def sampling
+    @sampling
   end
 end
