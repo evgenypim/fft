@@ -1,7 +1,9 @@
 # coding: UTF-8
 require "./function"
+require "benchmark"
 
 class FFT
+
   def initialize(signal)
     @counts = signal.discret_data if signal.is_a? TestSignal
     @counts = signal if signal.is_a? Digit
@@ -23,7 +25,7 @@ class FFT
   end
 
   def dpf(vec)
-    Array.new(vec.size) { |i| vec[i] * omega(-i, vec.size) }
+    Array.new(vec.size) { |i| find_one_count_of_dpf(vec, i) }
   end
 
   # calculate individual element of FFT matrix:  (e ^ (2 pi i k/n))
@@ -31,6 +33,17 @@ class FFT
   #
   def omega(k, n)
       Math::E ** Complex(0, 2 * Math::PI * k / n)
+  end
+
+  def kernel(k, n, size)
+    Math::E ** Complex(0, 2 * Math::PI * k * n / size)
+  end
+
+  def find_one_count_of_dpf(vec, n)
+    sum = 0
+    vec.each_with_index { |count, index| sum = sum + count * kernel(n, index, vec.size) }
+
+    sum
   end
 
   def make_matrix(data, base)
@@ -47,7 +60,7 @@ class FFT
   end
 
   def spectr
-    fft2(@counts).map(&:abs)
+    dpf(@counts).map(&:abs)
   end
 
   def min_arg
@@ -56,5 +69,9 @@ class FFT
 
   def max_arg
     @counts.size
+  end
+
+  def speed_koef
+    Benchmark.realtime { fft2(@counts) } / Benchmark.realtime { dpf(@counts) }
   end
 end
