@@ -1,1 +1,1 @@
-require './function'
+require "./function"

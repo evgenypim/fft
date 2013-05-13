@@ -1,13 +1,11 @@
 # coding: UTF-8
 require 'gnuplot'
-require './fft'
+require './test_signal'
+require "./fft"
 
 class DrawFFT
-  function = Function.initialize_cos_signal
+  function = TestSignal.initialize_cos_signal
   fft = FFT.new(function)
-
-  ARG_MIN = 0
-  ARG_MAX = 10000
 
   Gnuplot.open do |gp|
     Gnuplot::Plot.new( gp ) do |plot|
@@ -16,7 +14,7 @@ class DrawFFT
       plot.ylabel "Спектральная плотность"
       plot.xlabel "Частота"
       
-      plot.data << Gnuplot::DataSet.new([fft.args, fft.signal]) do |ds|
+      plot.data << Gnuplot::DataSet.new([fft.args, fft.spectr]) do |ds|
         ds.with = "impulses"
         ds.notitle
       end

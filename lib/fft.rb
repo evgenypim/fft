@@ -3,29 +3,23 @@ require "./function"
 
 class FFT
   def initialize(signal)
-    @counts = signal.discret_data if signal.is_a? Function
+    @counts = signal.discret_data if signal.is_a? TestSignal
     @counts = signal if signal.is_a? Digit
   end
 
-  # Solve "vec = fft_matrix * beta" for beta (modulo a constant.)
-  # (Divide result by Math::sqrt(vec.size) to preserve length.)
-  # vec.size is assumed to be a power of 2.
-  #
-  # Example use:  puts fft([1,1,1,1])
-  #
-  def fft(vec )
-      return vec if vec.size <= 1
+  def fft2(vec )
+    return vec if vec.size <= 1
 
-      even = Array.new(vec.size / 2) { |i| vec[2 * i] }
-      odd  = Array.new(vec.size / 2) { |i| vec[2 * i + 1] }
+    even = Array.new(vec.size / 2) { |i| vec[2 * i] }
+    odd  = Array.new(vec.size / 2) { |i| vec[2 * i + 1] }
 
-      fft_even = fft(even)
-      fft_odd  = fft(odd)
+    fft_even = fft2(even)
+    fft_odd  = fft2(odd)
 
-      fft_even.concat(fft_even)
-      fft_odd.concat(fft_odd)
+    fft_even.concat(fft_even)
+    fft_odd.concat(fft_odd)
 
-      Array.new(vec.size) {|i| fft_even[i] + fft_odd [i] * omega(-i, vec.size)}
+    Array.new(vec.size) {|i| fft_even[i] + fft_odd [i] * omega(-i, vec.size)}
   end
 
   def dpf(vec)
@@ -49,13 +43,11 @@ class FFT
   end
 
   def args
-    step = @counts.sampling.to_f / @counts.size
-    (0..@counts.size - 1).map { |i| i * step}
+    (0..@counts.size - 1).to_a
   end
 
-  def signal
-    fft(@counts)
-    # @counts
+  def spectr
+    fft2(@counts).map(&:abs)
   end
 
   def min_arg
@@ -63,7 +55,6 @@ class FFT
   end
 
   def max_arg
-    @counts.sampling
+    @counts.size
   end
-
 end

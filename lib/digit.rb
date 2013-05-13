@@ -1,11 +1,6 @@
 # coding: UTF-8
 class Digit < Array
-  def initialize(data, sampling)
-    @sampling = sampling
+  def initialize(data)
     super data
-  end
-
-  def sampling
-    @sampling
   end
 end
