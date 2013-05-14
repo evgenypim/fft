@@ -1,3 +1,3 @@
 require "./function"
 require "./fft"
-require "./test_signal"
+require "./test_signals"

@@ -1,11 +1,11 @@
 # coding: UTF-8
-require "./function"
-require "benchmark"
+require './function'
+require 'benchmark'
 
 class FFT
 
   def initialize(signal)
-    @counts = signal.discret_data if signal.is_a? TestSignal
+    @counts = signal.discret_data if signal.is_a? Function
     @counts = signal if signal.is_a? Digit
   end
 
@@ -71,7 +71,11 @@ class FFT
     @counts.size
   end
 
+  def arg_draw_ambit
+    "[#{min_arg}:#{max_arg}]"
+  end
+
   def speed_koef
-    Benchmark.realtime { fft2(@counts) } / Benchmark.realtime { dpf(@counts) }
+    Benchmark.realtime { dpf(@counts) } / Benchmark.realtime { fft2(@counts) }
   end
 end
