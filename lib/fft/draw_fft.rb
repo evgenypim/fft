@@ -9,7 +9,7 @@ module DrawFFT
   end
 
   def self.prepare_data
-    @fft ||= FFTProcess.new(prepare_signal(:cos_signal))
+    @fft ||= FFTResult.new(prepare_signal(:cos_signal))
   end
 
   def self.draw_spectr
