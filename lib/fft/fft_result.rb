@@ -1,5 +1,6 @@
 # coding: UTF-8
 require 'benchmark'
+require 'matrix'
 
 class FFTResult
 
@@ -31,11 +32,13 @@ class FFTResult
   # fft_matrix[i][j] = omega(i*j, n)
   #
   def omega(k, n)
-      Math::E ** Complex(0, 2 * Math::PI * k / n)
+    # Math::E ** Complex(0, 2 * Math::PI * k / n)
+    Complex::polar(1, Math::PI * k / n)
   end
 
   def kernel(k, n, size)
-    Math::E ** Complex(0, 2 * Math::PI * k * n / size)
+    # Math::E ** Complex(0, 2 * Math::PI * k * n / size)
+    Complex::polar(1, Math::PI * k * n / size)
   end
 
   def find_one_count_of_dpf(vec, n)
@@ -45,13 +48,17 @@ class FFTResult
     sum
   end
 
-  def make_matrix(data, base)
+  def prepare_matrix_data(data, base)
     return data if base.empty?
 
     parts_count = base.first
     step = data.size / parts_count
 
-    (0..parts_count-1).map { |i| make_matrix(data[i * step, step], base[1..base.size]) }
+    (0..parts_count-1).map { |i| prepare_matrix_data(data[i * step, step], base[1..base.size]) }
+  end
+
+  def make_matrix(data, size)
+    Mmatrix::rows(prepare_matrix_data(data, [size]))
   end
 
   def args
