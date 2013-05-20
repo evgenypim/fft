@@ -1,5 +1,6 @@
 # coding: UTF-8
 require 'benchmark'
+require 'matrix'
 
 class FFTProcess
 
@@ -37,9 +38,6 @@ class FFTProcess
     Array.new(vec.size) { |i| find_one_count_of_dpf(vec, i) }
   end
 
-  # calculate individual element of FFT matrix: (e ^ (2 pi i k/n))
-  # fft_matrix[i][j] = omega(i*j, n)
-  #
   def omega(k, n)
       Math::E ** Complex(0, 2 * Math::PI * k / n)
   end
@@ -53,13 +51,18 @@ class FFTProcess
     vec.inject { |sum, count|  index = index + 1; sum = sum + count * kernel(n, index, vec.size) }
   end
 
-  def make_matrix(data, base)
+  def prepare_matrix_data(data, base)
     return data if base.empty?
 
     parts_count = base.first
     step = data.size / parts_count
 
-    (0..parts_count-1).map { |i| make_matrix(data[i * step, step], base[1..base.size]) }
+    (0..parts_count-1).map { |i| prepare_matrix_data(data[i * step, step], base[1..base.size]) }
+  end
+
+  def make_matrix(vec, base)
+    data = prepare_matrix_data(vec, [base])
+    Matrix.rows(data)
   end
 
   def args
