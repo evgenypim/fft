@@ -8,6 +8,16 @@ class FFTProcess
     @counts = signal if signal.is_a? Digit
   end
 
+  def fft(vec, bases)
+    return vec if bases.empty?
+
+    base= bases.shift
+
+    make_matrix(vec, base)
+
+
+  end
+
   def fft2(vec )
     return vec if vec.size <= 1
 
@@ -39,10 +49,8 @@ class FFTProcess
   end
 
   def find_one_count_of_dpf(vec, n)
-    sum = 0
-    vec.each_with_index { |count, index| sum = sum + count * kernel(n, index, vec.size) }
-
-    sum
+    index = 0
+    vec.inject { |sum, count|  index = index + 1; sum = sum + count * kernel(n, index, vec.size) }
   end
 
   def make_matrix(data, base)
