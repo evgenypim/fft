@@ -16,12 +16,12 @@ class Function
   #
   # Examples
   #
-  #   Function.new(10) { |x| Math.cos(x) }
+  #   Function.new { |x| Math.cos(x) }
   #
   # Returns Function
-  def initialize(count = COUNT, &block)
+  def initialize(&block)
     @function = block
-    @count = count
+    @count = COUNT
   end
 
   # Public: Метод возвращает значение функции в указаной точке
@@ -34,8 +34,8 @@ class Function
   # f.result(0) # => 1
   #
   # Returns Function
-  def result(arg)
-    @function[arg] unless @function.nil?
+  def result(*arg)
+    @function[*arg] unless @function.nil?
   end
 
   # Public: Метод дискетизирует функцию с указанной частотой дискретизации
@@ -61,5 +61,9 @@ class Function
   # Returns Digit
   def discret_data
     @discret_data ||= discretisize
+  end
+
+  def *(other)
+    Function.new { |x, y| self.result(x)*other.result(y)}
   end
 end

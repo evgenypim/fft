@@ -17,7 +17,7 @@ class TestSignal < Function
   #
   # Returns TestSignal
   def self.cos_signal(count = COUNT, ampl = 1, phase = 0, f_division= F_DIVISION_COS)
-    self.new(count) { |n| ampl * Math.cos(2 * Math::PI * n / f_division + phase) }
+    self.new { |n| ampl * Math.cos(2 * Math::PI * n / f_division + phase) }
   end
 
   # Public: Метод создает тестовый cинусоидальный сигнал

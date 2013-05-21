@@ -7,16 +7,45 @@ class FFTProcess
   def initialize(signal)
     @counts = signal.discret_data if signal.is_a? Function
     @counts = signal if signal.is_a? Digit
+    @part_counts = Array.new
+    @result = Array.new
   end
 
+  attr_reader :part_counts, :result, :counts
+  
+
   def fft(vec, bases)
-    return vec if bases.empty?
+    matrix = make_matrix(vec, bases.first)
+    if bases.size == 1
+      partition_dpf(matrix)      
+    else
+      matrix.each { |v| fft(v, bases[1..bases.size]) }
+    end
+  end
 
-    base= bases.shift
+  def partition_dpf(matrix)
+    part_counts = Array.new
+    trans_matrix = matrix.transpose
 
-    make_matrix(vec, base)
+    l_m = matrix.size
+    m_m = matrix.first.size
 
+    trans_matrix.each_with_index do |vec, index|
+      vec.each_with_index do |count, vec_index|
 
+        trans_matrix[index][vec_index] = sum(0, m_m - 1) do |m|
+          kernel(-index, m ,m_m) * kernel(-vec_index, m , l_m*m_m) * sum(0, l_m - 1) { |l| matrix[l][m] * kernel(-l , vec_index, l_m) }
+        end
+
+        part_counts[index * l_m + vec_index] = trans_matrix[index][vec_index]
+      end
+    end 
+
+    result.concat part_counts
+  end
+
+  def sum(a, b, &block)
+    (a..b).inject { |res, arg| res += block.call(arg) }
   end
 
   def fft2(vec )
@@ -48,7 +77,7 @@ class FFTProcess
 
   def find_one_count_of_dpf(vec, n)
     index = 0
-    vec.inject { |sum, count|  index = index + 1; sum = sum + count * kernel(n, index, vec.size) }
+    vec.inject { |sum, count|  index = index + 1; sum = sum + count * kernel(-n, index, vec.size) }
   end
 
   def prepare_matrix_data(data, base)
@@ -61,8 +90,7 @@ class FFTProcess
   end
 
   def make_matrix(vec, base)
-    data = prepare_matrix_data(vec, [base])
-    Matrix.rows(data)
+    prepare_matrix_data(vec, [base])
   end
 
   def args
@@ -70,7 +98,9 @@ class FFTProcess
   end
 
   def spectr
-    dpf(@counts).map(&:abs)
+    fft(@counts, [2])
+
+    result.map(&:abs)
   end
 
   def min_arg
@@ -85,7 +115,7 @@ class FFTProcess
     "[#{min_arg}:#{max_arg}]"
   end
 
-  def speed_koef
-    Benchmark.realtime { dpf(@counts) } / Benchmark.realtime { fft2(@counts) }
+  def ratio
+    Benchmark.realtime { dpf(@counts) } / Benchmark.realtime { fft(@counts, [2]) }
   end
 end

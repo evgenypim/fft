@@ -2,7 +2,7 @@
 
 # Public: Класс, реализующий дискретные отсчеты сигнала
 class Digit < Array
-  def initialize(data)
-    super data
-  end
+  # def sum(&block, a, b)
+  #   (a..b).inject { |res, arg| res += block.call(arg) }
+  # end
 end
