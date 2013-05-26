@@ -7,47 +7,41 @@ class FFTProcess
   def initialize(signal)
     @counts = signal.discret_data if signal.is_a? Function
     @counts = signal if signal.is_a? Digit
-    @part_counts = Array.new
-    @result = Array.new
+    @result = []
   end
 
   attr_reader :part_counts, :result, :counts
   
 
   def fft(vec, bases)
-    # matrix = make_matrix(vec, bases.first)
-    # if bases.size == 1
-    #   cool_dpf(matrix)      
-    # else
-    #   matrix.each { |v| fft(v, bases[1..bases.size]) }
-    # end
-
+    if bases.size == 1
+      partition_dpf(vec, bases.first)      
+    else
+      matrix = make_matrix(vec, [bases.first])
+      matrix.each { |v| fft(v, bases[1..bases.size]) }
+    end
   end
 
-  # def cool_dpf(matrix)
-  #   result + dpf(matrix.first)
-  # end
-
   def partition_dpf(vec, base)
-    matrix = make_matrix(vec, base)
-    part_counts = Array.new
+    matrix = make_matrix(vec, [base])
+    @part_counts = []
 
     m_m = base
     l_m = matrix.size
 
-    matrix.each_with_index do |vec, index_str|
-      vec.each_with_index do |count, index_element|
-        part_counts[index_str * l_m + index_element] = sum(0, m_m - 1) do |m|
-          kernel(-index_str, m ,m_m) * kernel(-index_element, m , l_m * m_m) * sum(0, l_m - 1) { |l| matrix[l][m] * kernel(-l, index_element, l_m) }
+    matrix.each_with_index do |vec, s|
+      vec.each_with_index do |count, r|
+        @part_counts[r * l_m + s] = sum(0, m_m - 1) do |m|
+          kernel(-r, m, m_m) * kernel(-s, m, l_m * m_m) * sum(0, l_m - 1) { |l| matrix[l][m] * kernel(-l, s, l_m) }
         end
       end
     end 
 
-    result + part_counts
+    @result += @part_counts
   end
 
   def sum(a, b, &block)
-    (a..b).inject { |res, arg| res += block.call(arg) }
+    (a..b).inject(0) { |res, arg| res += block.call(arg) }
   end
 
   def fft2(vec)
@@ -103,9 +97,8 @@ class FFTProcess
   end
 
   def spectr
-    dpf(@counts).map(&:abs)
-
-    #result.map(&:abs)
+    fft(@counts, [8,2])
+    result.map(&:abs)
   end
 
   def min_arg

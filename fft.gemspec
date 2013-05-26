@@ -7,8 +7,8 @@ require 'fft/version'
 Gem::Specification.new do |s|
   s.name          = "fft"
   s.version       = Fft::VERSION
-  s.authors       = ["Evgeny Pim"]
-  s.email         = ["evgeny.pim@gmail.com"]
+  s.authors       = ["Evgeny Pim", "Aelphy"]
+  s.email         = ["evgeny.pim@gmail.com", "miha-usv@yandex.ru"]
   s.summary       = 'yet another fft realization'
   s.license       = "MIT"
 
