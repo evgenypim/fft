@@ -2,27 +2,16 @@
 require 'benchmark'
 require 'matrix'
 
-class FFTProcess
+class FFTProcess < Function
 
   def initialize(signal)
-    @counts = signal.discret_data if signal.is_a? Function
-    @counts = signal if signal.is_a? Digit
+    @counts = Digit.new(signal).discretisize(TestSignal::COUNT)
     @result = []
   end
 
   attr_reader :part_counts, :result, :counts
-  
 
-  def fft(vec, bases)
-    if bases.size == 1
-      partition_dpf(vec, bases.first)      
-    else
-      matrix = make_matrix(vec, [bases.first])
-      matrix.each { |v| fft(v, bases[1..bases.size]) }
-    end
-  end
-
-  def partition_dpf(vec, base)
+  def fft_by_time(vec, base)
     matrix = make_matrix(vec, [base])
     @part_counts = []
 
@@ -33,6 +22,24 @@ class FFTProcess
       vec.each_with_index do |count, r|
         @part_counts[r * l_m + s] = sum(0, m_m - 1) do |m|
           kernel(-r, m, m_m) * kernel(-s, m, l_m * m_m) * sum(0, l_m - 1) { |l| matrix[l][m] * kernel(-l, s, l_m) }
+        end
+      end
+    end 
+
+    @result += @part_counts
+  end
+
+  def fft_by_freq(vec, base)
+    matrix = make_matrix(vec, [base])
+    @part_counts = []
+
+    m_m = base
+    l_m = matrix.size
+
+    matrix.each_with_index do |vec, s|
+      vec.each_with_index do |count, r|
+        @part_counts[r * l_m + s] = sum(0, l_m - 1) do |l|
+          kernel(-l, s, l_m) * sum(0, m_m - 1) { |m| matrix[l][m] * kernel(-m, s, l_m * m_m) * kernel(-m, r, m_m) }
         end
       end
     end 
@@ -97,20 +104,8 @@ class FFTProcess
   end
 
   def spectr
-    fft(@counts, [8,2])
+    fft_by_time(@counts, 8)
     result.map(&:abs)
-  end
-
-  def min_arg
-    0
-  end
-
-  def max_arg
-    @counts.size
-  end
-
-  def arg_draw_ambit
-    "[#{min_arg}:#{max_arg}]"
   end
 
   def ratio

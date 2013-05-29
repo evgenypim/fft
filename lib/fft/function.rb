@@ -3,11 +3,9 @@
 # Public: Клас реализующий работу с функциямии
 class Function
 
-  # Public: Дефолное значение отношения частот дискретизации и сигнала(НЕ ПОНИМАЮ ПОЧЕМУ ОНО ТУТ)
-  F_DIVISION_COS = 10
-
-  # Public: Дефолное значение колличества отсчетов сигнала
-  COUNT = 128
+  def self.sum(a, b, &block)
+    (a..b).inject(0) { |res, arg| res += block.call(arg) }
+  end
 
   # Public: Инициализатор функции (НАМ В ЛЮБОМ СЛУЧАЕ НУЖНА ЧАСТОТА ДИСКРИТИЗАЦИИ!!! ГДЕ-ТО НО НУЖНА!!!)
   #
@@ -21,7 +19,6 @@ class Function
   # Returns Function
   def initialize(&block)
     @function = block
-    @count = COUNT
   end
 
   # Public: Метод возвращает значение функции в указаной точке
@@ -37,32 +34,12 @@ class Function
   def result(*arg)
     @function[*arg] unless @function.nil?
   end
-
-  # Public: Метод дискетизирует функцию с указанной частотой дискретизации
+  
+  # Public: Вычисляет композицию функций
   #
-  # Examples
+  # other - Function, функция, на которую надо умножить исходную 
   #
-  #  f = Function.new(1) { |x| Math.cos(x) }
-  #  f.discretisize #=> [1]
-  #
-  # Returns Digit
-  def discretisize
-    data = (0..@count-1).map { |n| result(n) }
-    Digit.new data
-  end
-
-  # Public: Метод возвращает дискретные отсчеты функции
-  #
-  # Examples
-  #
-  #  f = Function.new(1) { |x| Math.cos(x) }
-  #  f.discret_data #=> [1]
-  #
-  # Returns Digit
-  def discret_data
-    @discret_data ||= discretisize
-  end
-
+  # Returns Function
   def *(other)
     Function.new { |x, y| self.result(x)*other.result(y)}
   end
