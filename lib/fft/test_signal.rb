@@ -5,7 +5,7 @@ require 'fft/function'
 class TestSignal < Function
 
   # Public: Дефолное значение отношения частот дискретизации и сигнала
-  F_DIVISION = 10
+  F_DIVISION = 2
 
   # Public: Дефолное значение частоты дискретизации
   F_DISCRET = 10
@@ -25,7 +25,7 @@ class TestSignal < Function
   #   TestSignal.cos_signal(1, 0, 4)
   #
   # Returns TestSignal
-  def self.cos_signal(ampl = 1, phase = 0, f_division= F_DIVISION)
+  def self.cos_signal(ampl = 1, phase = 0, f_division = F_DIVISION)
     self.new { |n| ampl * Math.cos(2 * Math::PI * n / f_division + phase) }
   end
 
@@ -45,7 +45,7 @@ class TestSignal < Function
     self.new { |n| ampl * Math.sin(2 * Math::PI * n / f_division + phase) }
   end
 
-  def self.radio_impulse(ampl = 1, q = 4, phase = 0, ti = 2, t0 = 1, f_division = F_DIVISION, f_discret = F_DISCRET)
+  def self.radio_impulse(ampl = 1, q = 4, phase = 0, ti = 10, t0 = 1, f_division = F_DIVISION, f_discret = F_DISCRET)
     f_s = TestSignal.f_signal(f_division, f_discret)
 
     self.new do |n|
@@ -62,6 +62,10 @@ class TestSignal < Function
     self.new do |x|
       x - t0 < 0 ? 0:1    
     end
+  end
+
+  def self.mix(fdiv1 = 0.5, fdiv2 = 2/1.2, a1 = 1, a2 = 5)
+    self.new { |n| a1 * Math.cos(2 * Math::PI * n / fdiv1) + a2 * Math.cos(2 * Math::PI * n / fdiv2) }
   end
 
   def self.f_signal(f_division, f_discret)

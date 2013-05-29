@@ -4,15 +4,15 @@ require 'matrix'
 
 class FFTProcess < Function
 
-  def initialize(signal)
-    @counts = Digit.new(signal).discretisize(TestSignal::COUNT)
+  def initialize(signal, count = TestSignal::COUNT)
+    @counts = Digit.new(signal).discretisize(count)
     @result = []
   end
 
   attr_reader :part_counts, :result, :counts
 
   def fft_by_time(vec, base)
-    matrix = make_matrix(vec, [base])
+    matrix = make_matrix(vec, base)
     @part_counts = []
 
     m_m = base
@@ -30,7 +30,7 @@ class FFTProcess < Function
   end
 
   def fft_by_freq(vec, base)
-    matrix = make_matrix(vec, [base])
+    matrix = make_matrix(vec, base)
     @part_counts = []
 
     m_m = base
@@ -84,27 +84,21 @@ class FFTProcess < Function
     Math::E ** Complex(0, 2 * Math::PI * k * count / size)
   end
 
-  def make_matrix(vec, bases)
-    return vec if bases.empty?  
-
-    base = bases.pop
-
+  def make_matrix(vec, base)
     raise "придурок пытается разделить неразделимое" if vec.size % base !=0
     count = vec.size / base
 
     raise "придурок вышел за границы" if count == 0
 
-    temp = (0..count-1).map { |i| vec[i * base, base] }
-
-    make_matrix(temp, bases)
+    (0..count-1).map { |i| vec[i * base, base] }
   end
 
   def args
     (0..@counts.size - 1).to_a
   end
 
-  def spectr
-    fft_by_time(@counts, 8)
+  def spectr(base = 2)
+    fft_by_time(@counts, base)
     result.map(&:abs)
   end
 
