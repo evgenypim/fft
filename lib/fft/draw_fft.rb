@@ -41,15 +41,15 @@ class DrawFFT
     end
   end
 
-  def draw_sin_spectr(count = 64, f_div = 4)
+  def draw_cos_spectr(count = 64, f_div = 4)
     sig = TestSignal.cos_signal(f_division = f_div)
     fft = FFTProcess.new(sig, count)
     
     Gnuplot.open do |gp|
       Gnuplot::Plot.new( gp ) do |plot|
         plot.xrange arg_draw_ambit(fft.counts)
-        plot.title "Cигнал"
-        plot.ylabel "Значения сигнала"
+        plot.title "Спектр"
+        plot.ylabel "Значения спектра"
         plot.xlabel "Отсчеты"
 
         plot.data << Gnuplot::DataSet.new([fft.args, fft.spectr(8)]) do |ds|
@@ -80,7 +80,7 @@ class DrawFFT
   end
 
   def draw_radio_impulse_spectr(count = 64)
-    sig = TestSignal.radio_impulse
+    sig = TestSignal.radio_impulse1
     fft = FFTProcess.new(sig, count)
     
     Gnuplot.open do |gp|
@@ -116,4 +116,22 @@ class DrawFFT
     end
   end
 
+  def draw_spectr_noise(count = 64, n = 60)
+    sig = TestSignal.cos_signal_with_noise(n1 = n)
+    fft = FFTProcess.new(sig, count)
+
+    Gnuplot.open do |gp|
+      Gnuplot::Plot.new( gp ) do |plot|
+        plot.xrange arg_draw_ambit(fft.counts)
+        plot.title "Cигнал"
+        plot.ylabel "Значения сигнала"
+        plot.xlabel "Отсчеты"
+
+        plot.data << Gnuplot::DataSet.new([fft.args, fft.spectr(8)]) do |ds|
+          ds.with = "impulses"
+          ds.notitle
+        end
+      end
+    end
+  end
 end

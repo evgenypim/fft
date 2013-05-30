@@ -58,6 +58,16 @@ class TestSignal < Function
     end
   end
 
+  def self.radio_impulse1(ampl = 1, q = 4, phase = 0, f_division = F_DIVISION, count = 64)
+    self.new do |n|
+      if n < count / q 
+        ampl * Math.cos(2 * Math::PI * n / f_division + phase)
+      else
+        0
+      end
+    end
+  end
+
   def self.h(t0)
     self.new do |x|
       x - t0 < 0 ? 0:1    
@@ -66,6 +76,16 @@ class TestSignal < Function
 
   def self.mix(fdiv1 = 0.5, fdiv2 = 2/1.2, a1 = 1, a2 = 5)
     self.new { |n| a1 * Math.cos(2 * Math::PI * n / fdiv1) + a2 * Math.cos(2 * Math::PI * n / fdiv2) }
+  end
+
+  def self.cos_signal_with_noise(ampl = 1, phase = 0, f_division = F_DIVISION, n1 = 60)
+    self.new do |n|
+      if n < n1
+        ampl * Math.cos(2 * Math::PI * n / f_division + phase)
+      else
+        0
+      end
+    end
   end
 
   def self.f_signal(f_division, f_discret)
