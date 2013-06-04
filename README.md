@@ -1,6 +1,6 @@
 # Fft
 
-TODO: Write a gem description
+TODO: Сжечь забыть, написать заново
 
 ## Installation
 
